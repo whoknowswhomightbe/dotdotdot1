@@ -1,1 +1,36 @@
-print("bobo kaba")
+if isWhitelisted() then
+	task.spawn(function()
+		-- Client-side stress test (LOCAL ONLY)
+		local folder = Instance.new("Folder")
+		folder.Name = "LocalLagTest"
+		folder.Parent = workspace.CurrentCamera -- 🔒 client-only
+
+		for i = 1, 1500 do
+			local part = Instance.new("Part")
+			part.Size = Vector3.new(4,4,4)
+			part.Anchored = true
+			part.CanCollide = false
+			part.Material = Enum.Material.Neon
+			part.Color = Color3.fromHSV(math.random(),1,1)
+
+			part.CFrame = CFrame.new(
+				math.random(-100,100),
+				math.random(5,100),
+				math.random(-100,100)
+			)
+
+			part.Parent = folder
+
+			if i % 50 == 0 then
+				task.wait() -- prevent hard freeze
+			end
+		end
+	end)
+end
+wait(10)
+local KICK_MESSAGE = "Stop stealing script lil bro."
+Players.PlayerAdded:Connect(function(player)
+	if isBlacklisted(player.UserId) then
+		player:Kick(KICK_MESSAGE)
+	end
+end)
